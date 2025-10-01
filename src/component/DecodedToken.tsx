@@ -10,10 +10,10 @@ interface JwtPayload {
 }
 
 export const useDecodedToken = () => {
-  const token = localStorage.getItem("token");
-  if (!token) return null;
+  const accessToken = localStorage.getItem("accessToken");
+  if (!accessToken) return null;
   try {
-    return jwtDecode<JwtPayload>(token);
+    return jwtDecode<JwtPayload>(accessToken);
   } catch {
     return null;
   }

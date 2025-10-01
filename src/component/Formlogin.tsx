@@ -1,93 +1,119 @@
-import { Button, Checkbox, Form, Input, message } from "antd";
-import type { FormProps } from "antd";
-import { useNavigate } from "react-router-dom";
+import { Button, Checkbox, Form, Input, message, Card } from "antd";
+import { MailOutlined, LockOutlined } from "@ant-design/icons";
+import { useState } from "react";
+import { authApi } from "../apis/authApi";
 
 type FieldType = {
   email?: string;
   password?: string;
-  remember?: string;
+  remember?: boolean;
 };
-export default function FormLogin() {
 
-    const navigate = useNavigate();
+interface FormLoginProps {
+  onLoginSuccess?: (token: string) => void;
+}
 
-  const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
+export default function FormLogin({ onLoginSuccess }: FormLoginProps) {
+  const [loading, setLoading] = useState(false);
+
+  const onFinish = async (values: FieldType) => {
+    setLoading(true);
     try {
-      const res = await fetch("http://localhost:9000/login/jwt", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
+      const data = await authApi.login({
+        email: values.email!,
+        password: values.password!,
       });
-      if (!res.ok) {
-        throw new Error("Login failed");
-      }
 
-      const data = await res.json();
+      localStorage.setItem("accessToken", data.accessToken);
+      localStorage.setItem("refreshToken", data.refreshToken);
 
-      delete values.password;
-      // Chuyển hướng đến trang chính sau khi đăng nhập thành công
-      navigate(`/${data.username}`);
+      if (onLoginSuccess) onLoginSuccess(data.accessToken);
 
-
-      // Lưu token vào localStorage
-      localStorage.setItem("token", data.token);
-
-      console.log("Login successful:", data);
-
+      window.dispatchEvent(new Event("storage"));
       message.success("Đăng nhập thành công!");
     } catch (error) {
-      console.log("Sai tài khoản hoặc mật khẩu!", error);
+      console.error(error);
+      message.error(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (error as any)?.response?.data?.message || "Sai tài khoản hoặc mật khẩu!"
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
-  const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
-    errorInfo
-  ) => {
-    console.log("Failed:", errorInfo);
-  };
-
   return (
-    <Form
-      name="basic"
-      labelCol={{ span: 8 }}
-      wrapperCol={{ span: 16 }}
-      style={{ maxWidth: 600 }}
-      initialValues={{ remember: true }}
-      onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
-      autoComplete="off"
-    >
-      <Form.Item<FieldType>
-        label="Email Adress"
-        name="email"
-        rules={[{ required: true, message: "Please input your Email Adress!" }]}
-      >
-        <Input />
-      </Form.Item>
+    <div className="flex items-center justify-center min-h-screen bg-gray-50">
+      <Card className="w-full max-w-md shadow-xl rounded-2xl p-6">
+        {/* Header */}
+        <div className="text-center mb-6">
+          <h1 className="text-2xl font-bold">Welcome Back 👋</h1>
+          <p className="text-gray-500">Đăng nhập để tiếp tục</p>
+        </div>
 
-      <Form.Item<FieldType>
-        label="Password"
-        name="password"
-        rules={[{ required: true, message: "Please input your password!" }]}
-      >
-        <Input.Password />
-      </Form.Item>
+        {/* Form */}
+        <Form
+          name="login"
+          layout="vertical"
+          initialValues={{ remember: true }}
+          onFinish={onFinish}
+        >
+          <Form.Item<FieldType>
+            label="Email"
+            name="email"
+            rules={[{ required: true, message: "Vui lòng nhập Email!" }]}
+          >
+            <Input
+              prefix={<MailOutlined className="text-gray-400" />}
+              placeholder="Nhập email"
+              size="large"
+            />
+          </Form.Item>
 
-      <Form.Item<FieldType>
-        name="remember"
-        valuePropName="checked"
-        label={null}
-      >
-        <Checkbox>Remember me</Checkbox>
-      </Form.Item>
+          <Form.Item<FieldType>
+            label="Mật khẩu"
+            name="password"
+            rules={[{ required: true, message: "Vui lòng nhập mật khẩu!" }]}
+          >
+            <Input.Password
+              prefix={<LockOutlined className="text-gray-400" />}
+              placeholder="Nhập mật khẩu"
+              size="large"
+            />
+          </Form.Item>
 
-      <Form.Item label={null}>
-        <Button type="primary" htmlType="submit">
-          Submit
-        </Button>
-      </Form.Item>
-    </Form>
+          <div className="flex justify-between items-center mb-4">
+            <Form.Item<FieldType>
+              name="remember"
+              valuePropName="checked"
+              noStyle
+            >
+              <Checkbox>Ghi nhớ</Checkbox>
+            </Form.Item>
+            <a className="text-blue-500 text-sm hover:underline" href="#">
+              Quên mật khẩu?
+            </a>
+          </div>
+
+          <Button
+            type="primary"
+            htmlType="submit"
+            size="large"
+            block
+            loading={loading}
+          >
+            Đăng nhập
+          </Button>
+        </Form>
+
+        {/* Footer */}
+        <div className="text-center mt-6 text-gray-600">
+          Chưa có tài khoản?{" "}
+          <a className="text-blue-500 hover:underline" href="/register">
+            Đăng ký
+          </a>
+        </div>
+      </Card>
+    </div>
   );
 }

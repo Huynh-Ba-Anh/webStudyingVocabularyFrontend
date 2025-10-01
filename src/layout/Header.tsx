@@ -1,88 +1,126 @@
-import { Layout, Menu, Button, Dropdown } from "antd";
+import { Menu, Button, Dropdown, Modal } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { useState } from "react";
-import FormLogin from "../component/Formlogin";
+import { useNavigate } from "react-router-dom";
 import RegisterForm from "../component/RegisterForm";
+import FormLogin from "../component/Formlogin";
 
-const { Header } = Layout;
-
-export default function Navbar() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenRegister, setIsOpenRegister] = useState(false);
-  const token = localStorage.getItem("token");
-  const userMenu = (
-    <Menu
-      items={[
-        { key: "profile", label: "Hồ sơ" },
-        {
-          key: "logout",
-          label: "Đăng xuất",
-          onClick: () => setIsLoggedIn(false),
+  const [token, setToken] = useState(localStorage.getItem("accessToken"));
+  const navigate = useNavigate();
+
+  const handleLoginSuccess = (newToken: string) => {
+    setToken(newToken);
+    setIsOpen(false);
+  };
+
+  const userMenu = {
+    items: [
+      { key: "profile", label: "Hồ sơ", onClick: () => navigate("/profile") },
+      {
+        key: "logout",
+        label: "Đăng xuất",
+        onClick: () => {
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+          setToken(null);
+          window.dispatchEvent(new Event("storage"));
+          navigate("/");
         },
-      ]}
-    />
-  );
+      },
+    ],
+  };
 
   return (
-    <Header className="flex justify-between items-center bg-white shadow px-6">
+    <header className="flex justify-between items-center bg-white shadow-md px-8 py-3 sticky top-0 z-50">
       {/* Logo */}
-      <div className="text-xl font-bold text-blue-600">VocabStudy</div>
+      <div
+        className="text-2xl font-extrabold bg-gradient-to-r from-blue-600 to-indigo-500 text-transparent bg-clip-text cursor-pointer"
+        onClick={() => navigate("/")}
+      >
+        VocabStudy
+      </div>
 
-      {/* Menu */}
-      {!isLoggedIn ? (
-        <>
-          <div className={`${token ? "hidden" : "flex"} space-x-3`}>
-            <Button
-              onClick={() =>
-                isOpen
-                  ? setIsOpen(false)
-                  : (setIsOpen(true), setIsOpenRegister(false))
-              }
-            >
-              Đăng nhập
-            </Button>
-            <div
-              className={`${
-                isOpen ? "flex" : "hidden"
-              } p-4 border rounded shadow-lg bg-white fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2`}
-            >
-              <FormLogin />
-            </div>
-            <Button
-              type="primary"
-              onClick={() =>
-                isOpenRegister
-                  ? setIsOpenRegister(false)
-                  : (setIsOpenRegister(true), setIsOpen(false))
-              }
-            >
-              Đăng ký
-            </Button>
-            <div
-              className={`${
-                isOpenRegister ? "flex" : "hidden"
-              } p-4 border rounded shadow-lg bg-white fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2`}
-            >
-              <RegisterForm />
-            </div>
-          </div>
-        </>
+      {!token ? (
+        <div className="flex gap-3">
+          <Button
+            className="rounded-lg"
+            onClick={() => {
+              setIsOpen(true);
+              setIsOpenRegister(false);
+            }}
+          >
+            Đăng nhập
+          </Button>
+
+          <Button
+            type="primary"
+            className="rounded-lg"
+            onClick={() => {
+              setIsOpenRegister(true);
+              setIsOpen(false);
+            }}
+          >
+            Đăng ký
+          </Button>
+        </div>
       ) : (
-        <div className="flex items-center space-x-6">
+        <div className="flex items-center gap-6">
           <Menu
             mode="horizontal"
+            selectable={false}
             items={[
-              { key: "study", label: "Học từ vựng" },
-              { key: "practice", label: "Luyện tập" },
-              { key: "stats", label: "Thống kê" },
+              {
+                key: "study",
+                label: "Học từ vựng",
+                onClick: () => navigate("/vocabulary"),
+              },
+              {
+                key: "practice",
+                label: "Luyện tập",
+                onClick: () => navigate("/progress"),
+              },
+              {
+                key: "stats",
+                label: "Thống kê",
+                onClick: () => navigate("/progress"),
+              },
             ]}
           />
-          <Dropdown overlay={userMenu} placement="bottomRight">
-            <Button icon={<UserOutlined />} />
+          <Dropdown menu={userMenu} placement="bottomRight" arrow>
+            <Button
+              icon={<UserOutlined />}
+              className="rounded-full shadow-sm hover:shadow-md"
+            />
           </Dropdown>
         </div>
       )}
-    </Header>
+
+      {/* Modal Login */}
+      <Modal
+        open={isOpen}
+        footer={null}
+        centered
+        onCancel={() => setIsOpen(false)}
+        destroyOnHidden
+        title="Đăng nhập"
+      >
+        <FormLogin onLoginSuccess={handleLoginSuccess} />
+      </Modal>
+
+      {/* Modal Register */}
+      <Modal
+        open={isOpenRegister}
+        footer={null}
+        centered
+        onCancel={() => setIsOpenRegister(false)}
+        destroyOnHidden
+        title="Đăng ký"
+      >
+        <RegisterForm />
+      </Modal>
+    </header>
   );
 }
