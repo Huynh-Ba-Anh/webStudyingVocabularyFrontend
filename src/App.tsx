@@ -1,32 +1,41 @@
+import { useEffect, useState } from "react";
 import MainLayout from "./layout/MainLayout";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import HomePage from "./pages/Home/home";
-import ProtectedRoute from "./component/ProtectedRoute";
 import SettingsPage from "./pages/settingsPage";
-import Dashboard from "./pages/dashboard";
 import VocabularyPage from "./pages/vocabularyPage";
+import Progress from "./pages/progress";
 
 function App() {
+  const [accessToken, setToken] = useState(localStorage.getItem("accessToken"));
+
+  // Lắng nghe sự thay đổi trong localStorage
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setToken(localStorage.getItem("accessToken"));
+    };
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
+
   return (
     <BrowserRouter>
       <Routes>
-        {/* Route cha có layout chung */}
-        <Route path="/" element={<MainLayout />}/>
-          {/* Route cần bảo vệ */}
-          <Route path=":username" element={<ProtectedRoute />}>
-            {/* HomePage là cha, bao bọc About */}
-            <Route element={<HomePage />}>
-              <Route index element={<div>Trang chủ người dùng</div>} />
-              <Route path="settings" element={<SettingsPage/>} />
-              <Route path="vocabulary" element={<VocabularyPage/>} />
-              <Route path="dashboard" element={<Dashboard/>} />
-            </Route>
+        {accessToken ? (
+          <Route element={<MainLayout />}>
+            <Route path="/" element={<VocabularyPage />} />  
+            <Route path="settings" element={<SettingsPage />} />
+            <Route path="vocabulary" element={<VocabularyPage />} />
+            <Route path="progress" element={<Progress />} />
           </Route>
-
-        {/* 404 page */}
+        ) : (
+          <Route element={<MainLayout />}>
+            <Route path="/" element={null} />
+          </Route>
+        )}
         <Route path="*" element={<div>404 Not Found</div>} />
       </Routes>
     </BrowserRouter>
   );
 }
+
 export default App;

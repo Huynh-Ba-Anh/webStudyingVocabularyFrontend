@@ -1,7 +1,9 @@
-import { Button, Modal } from "antd";
+// src/component/FlashCard.tsx
+import { Button, message, Modal } from "antd";
 import { useState } from "react";
 import DetailCard from "./DetailCard";
-import { Vocabulary } from "../helpers/TypeData"; // 👈 dùng chung
+import { Vocabulary } from "../helpers/TypeData";
+import { vocabApi } from "../apis/vocabsApi";
 
 export default function FlashCard({
   vocab,
@@ -15,16 +17,12 @@ export default function FlashCard({
 
   const handleDelete = async (vocab: Vocabulary) => {
     try {
-      await fetch(`http://localhost:9000/vocabularies/${vocab._id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      await vocabApi.delete(vocab._id);
+      message.success("Xóa thành công!");
       onUpdate();
     } catch (error) {
-      console.error("Error deleting vocabulary:", error);
+      console.error(error);
+      message.error((error as Error).message || "Xóa thất bại");
     }
   };
 
@@ -49,49 +47,53 @@ export default function FlashCard({
           </div>
 
           {/* Back */}
-          <div className="absolute w-full h-full bg-yellow-50 rounded-xl shadow-xl flex flex-col justify-center items-center [backface-visibility:hidden] [transform:rotateY(180deg)] p-4 transition-transform duration-500 ease-in-out">
-      
-      {/* Nghĩa và ví dụ */}
-      <p className="text-lg font-semibold text-center">{vocab.meaning}</p>
-      <p className="text-gray-600 mt-2 text-center">
-        Ví dụ: {vocab.example}
-      </p>
+          <div className="absolute w-full h-full bg-yellow-50 rounded-xl shadow-xl flex flex-col justify-center items-center [backface-visibility:hidden] [transform:rotateY(180deg)] p-4">
+            <p className="text-lg font-semibold text-center">{vocab.meaning}</p>
+            <p className="text-gray-600 mt-2 text-center">
+              Ví dụ: {vocab.example}
+            </p>
 
-      {/* Nút Chi tiết + Xóa */}
-      <div className="flex gap-3 mt-4">
-        <Button
-          type="primary"
-          size="small"
-          onClick={(e) => {
-            e.stopPropagation(); // tránh click card cha
-            setOpen(true);
-          }}
-        >
-          Chi tiết
-        </Button>
+            <div className="flex gap-3 mt-4">
+              <Button
+                type="primary"
+                size="small"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setOpen(true);
+                }}
+              >
+                Chi tiết
+              </Button>
 
-        <Button
-          danger
-          size="small"
-          onClick={() => {
-            Modal.confirm({
-              title: "Xác nhận xóa",
-              content: `Bạn chắc chắn muốn xóa từ "${vocab.word}" không?`,
-              okText: "Xóa",
-              okType: "danger",
-              cancelText: "Hủy",
-              onOk: () => handleDelete(vocab),
-            });
-          }}
-        >
-          Xóa
-        </Button>
-      </div>
-    </div>
+              <Button
+                danger
+                size="small"
+                onClick={() => {
+                  Modal.confirm({
+                    title: "Xác nhận xóa",
+                    content: `Bạn chắc chắn muốn xóa từ "${vocab.word}" không?`,
+                    okText: "Xóa",
+                    okType: "danger",
+                    cancelText: "Hủy",
+                    onOk: () => handleDelete(vocab),
+                  });
+                }}
+              >
+                Xóa
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
 
-      <Modal open={open} onCancel={() => setOpen(false)} footer={null} centered>
+      {/* Modal quản lý từ FlashCard */}
+      <Modal
+        open={open}
+        onCancel={() => setOpen(false)}
+        footer={null}
+        centered
+        destroyOnHidden
+      >
         <DetailCard
           vocab={vocab}
           onUpdate={() => {
