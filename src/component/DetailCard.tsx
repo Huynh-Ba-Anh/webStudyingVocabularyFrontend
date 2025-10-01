@@ -1,4 +1,3 @@
-// src/component/DetailCard.tsx
 import { Button, Form, Input, Select, message } from "antd";
 import { useState } from "react";
 import { Vocabulary } from "../helpers/TypeData";

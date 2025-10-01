@@ -1,4 +1,3 @@
-// src/component/FlashCard.tsx
 import { Button, message, Modal } from "antd";
 import { useState } from "react";
 import DetailCard from "./DetailCard";

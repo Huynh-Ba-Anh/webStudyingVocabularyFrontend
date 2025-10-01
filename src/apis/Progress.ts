@@ -1,4 +1,3 @@
-// src/apis/vocabApi.ts
 import { FillExercise, Progress } from "../shared/ts/interface/progress";
 import { Results } from "../shared/ts/types/fillExercises";
 import axiosClient from "./axiosClient";
