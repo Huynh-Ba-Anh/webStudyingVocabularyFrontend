@@ -83,7 +83,6 @@ export default function VocabularyPage() {
         </div>
       </Card>
 
-      {/* Drawer thêm từ vựng */}
       <Drawer
         title="Thêm từ vựng mới"
         placement="right"

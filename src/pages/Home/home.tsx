@@ -17,9 +17,7 @@ export default function HomePage() {
 
   return (
     <div className="flex h-screen">
-      {/* Sidebar bên trái */}
       <div className="w-64 bg-gray-100 shadow-md p-4 flex flex-col space-y-6">
-        {/* Lời chào */}
         <span className="text-blue-600 font-semibold">
           {decoded?.role === "admin"
             ? "Xin chào Admin"
@@ -39,7 +37,6 @@ export default function HomePage() {
           ))}
         </nav>
 
-        {/* Nút đăng xuất ở cuối sidebar */}
         {decoded && (
           <Button
             type="primary"
@@ -55,7 +52,6 @@ export default function HomePage() {
         )}
       </div>
 
-      {/* Nội dung chính */}
       <div className="flex-1 p-6 bg-white overflow-y-auto">
         <Outlet />
       </div>

@@ -8,7 +8,6 @@ import Progress from "./pages/progress";
 function App() {
   const [accessToken, setToken] = useState(localStorage.getItem("accessToken"));
 
-  // Lắng nghe sự thay đổi trong localStorage
   useEffect(() => {
     const handleStorageChange = () => {
       setToken(localStorage.getItem("accessToken"));

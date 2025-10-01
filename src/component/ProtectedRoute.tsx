@@ -20,18 +20,16 @@ const ProtectedRoute = () => {
   try {
     const decoded = jwtDecode<JwtPayload>(token);
 
-    // Check hết hạn
     if (decoded.exp * 1000 < Date.now()) {
       localStorage.removeItem("token");
       return <Navigate to="/" replace />;
     }
 
-    // Check username trong token có khớp với URL không
     if (decoded.username !== username) {
       return <Navigate to="*" replace />;
     }
 
-    return <Outlet />; // ✅ Render các route con nếu hợp lệ
+    return <Outlet />; 
   } catch (error) {
       console.error(error);
     return <Navigate to="*" replace />;

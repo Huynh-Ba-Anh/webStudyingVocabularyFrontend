@@ -132,7 +132,6 @@ export default function Progress() {
         </Radio.Group>
 
         <div className="flex justify-between gap-4 mt-6">
-          {/* Nút Câu trước */}
           <Button
             size="large"
             className="rounded-xl border-gray-300 hover:border-gray-400 px-6 py-3"
@@ -142,7 +141,6 @@ export default function Progress() {
             Câu trước
           </Button>
 
-          {/* Nút Câu tiếp theo / Nộp bài */}
           {!isLast ? (
             <Button
               type="primary"

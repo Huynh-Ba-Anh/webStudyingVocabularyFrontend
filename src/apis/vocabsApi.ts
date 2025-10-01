@@ -1,7 +1,6 @@
 import { Vocabulary } from "../helpers/TypeData";
 import axiosClient from "./axiosClient";
 
-// src/apis/vocabApi.ts
 export const vocabApi = {
   getAll() {
     return axiosClient.get(`/vocabularies`);

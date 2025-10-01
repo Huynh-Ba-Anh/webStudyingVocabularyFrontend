@@ -1,15 +1,11 @@
-// src/types/index.ts
-
-// User type
 export interface User {
   _id: string;
   userName: string;
   email: string;
-  password?: string; // không nên trả về password trong API
+  password?: string; 
   role: "user" | "admin";
 }
 
-// Vocabulary type
 export interface Vocabulary {
   _id: string;
   word: string;
@@ -29,15 +25,14 @@ export interface Vocabulary {
   example: string;
   status: "new";
   inforMore: string;
-  created_at: string; // từ backend trả về Date dạng string
-  userId: string; // tham chiếu đến User._id
+  created_at: string; 
+  userId: string;
 }
 
-// Progress type
 export interface Progress {
   _id: string;
-  user_id: string; // tham chiếu User
-  vocabulary_id: string; // tham chiếu Vocabulary
+  user_id: string; 
+  vocabulary_id: string;
   status: "new" | "learning" | "forgotten" | "mastered";
   correct_count: number;
   wrong_count: number;
