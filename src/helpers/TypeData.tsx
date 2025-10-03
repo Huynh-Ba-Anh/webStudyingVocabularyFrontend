@@ -2,7 +2,7 @@ export interface User {
   _id: string;
   userName: string;
   email: string;
-  password?: string; 
+  password?: string;
   role: "user" | "admin";
 }
 
@@ -25,13 +25,13 @@ export interface Vocabulary {
   example: string;
   status: "new";
   inforMore: string;
-  created_at: string; 
+  created_at: string;
   userId: string;
 }
 
 export interface Progress {
   _id: string;
-  user_id: string; 
+  user_id: string;
   vocabulary_id: string;
   status: "new" | "learning" | "forgotten" | "mastered";
   correct_count: number;

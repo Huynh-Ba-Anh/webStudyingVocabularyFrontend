@@ -85,7 +85,6 @@ export default function FlashCard({
         </div>
       </div>
 
-      {/* Modal quản lý từ FlashCard */}
       <Modal
         open={open}
         onCancel={() => setOpen(false)}

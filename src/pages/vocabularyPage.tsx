@@ -7,8 +7,7 @@ import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import CardAdd from "../component/CardAdd";
 import { vocabApi } from "../apis/vocabsApi";
 import { motion, AnimatePresence } from "framer-motion";
-import ImportVocabExcel from "../component/ImportVocabExcel"; // 👈 thêm import
-
+import ImportVocabExcel from "../component/ImportVocab/ImportVocabExcel";
 type CategoryKey = "new" | "learning" | "forgotten" | "mastered" | "all";
 
 const categories = [
@@ -25,7 +24,7 @@ export default function VocabularyPage() {
   const [reload, setReload] = useState(false);
   const [selected, setSelected] = useState<CategoryKey>("all");
   const [openAdd, setOpenAdd] = useState(false);
-  const [openImport, setOpenImport] = useState(false); // 👈 Drawer import
+  const [openImport, setOpenImport] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -74,7 +73,6 @@ export default function VocabularyPage() {
             />
 
             <Space>
-              {/* Nút Import Excel */}
               <Button
                 icon={<UploadOutlined />}
                 onClick={() => setOpenImport(true)}
@@ -84,7 +82,6 @@ export default function VocabularyPage() {
                 Import Excel
               </Button>
 
-              {/* Nút Thêm từ */}
               <Button
                 type="primary"
                 icon={<PlusOutlined />}
@@ -99,7 +96,6 @@ export default function VocabularyPage() {
         </div>
       </Card>
 
-      {/* Drawer Thêm từ */}
       <Drawer
         title="Thêm từ vựng mới"
         placement="right"
@@ -107,7 +103,7 @@ export default function VocabularyPage() {
         onClose={() => setOpenAdd(false)}
         open={openAdd}
         destroyOnHidden
-        bodyStyle={{ padding: "1rem" }}
+        styles={{ body: { padding: "1rem" } }}
       >
         <CardAdd
           onAdded={() => setReload((prev) => !prev)}
@@ -115,7 +111,6 @@ export default function VocabularyPage() {
         />
       </Drawer>
 
-      {/* Drawer Import Excel */}
       <Drawer
         title="Import từ Excel"
         placement="right"
@@ -123,12 +118,11 @@ export default function VocabularyPage() {
         onClose={() => setOpenImport(false)}
         open={openImport}
         destroyOnHidden
-        bodyStyle={{ padding: "1rem" }}
+        styles={{ body: { padding: "1rem" } }}
       >
         <ImportVocabExcel onImported={() => setReload((prev) => !prev)} />
       </Drawer>
 
-      {/* Content */}
       <div className="p-6">
         {loading ? (
           <div className="flex flex-col justify-center items-center h-60">
