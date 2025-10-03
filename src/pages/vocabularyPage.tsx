@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { useDecodedToken } from "../component/DecodedToken";
 import { Vocabulary } from "../helpers/TypeData";
 import FlashCard from "../component/FlashCard";
-import { Button, Select, Card, Spin, Empty, Drawer } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { Button, Select, Card, Spin, Empty, Drawer, Space } from "antd";
+import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import CardAdd from "../component/CardAdd";
 import { vocabApi } from "../apis/vocabsApi";
 import { motion, AnimatePresence } from "framer-motion";
+import ImportVocabExcel from "../component/ImportVocabExcel"; // 👈 thêm import
 
 type CategoryKey = "new" | "learning" | "forgotten" | "mastered" | "all";
 
@@ -23,7 +24,8 @@ export default function VocabularyPage() {
   const decoded = useDecodedToken();
   const [reload, setReload] = useState(false);
   const [selected, setSelected] = useState<CategoryKey>("all");
-  const [open, setOpen] = useState(false);
+  const [openAdd, setOpenAdd] = useState(false);
+  const [openImport, setOpenImport] = useState(false); // 👈 Drawer import
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -70,32 +72,60 @@ export default function VocabularyPage() {
               }))}
               className="w-full sm:w-52"
             />
-            <Button
-              type="primary"
-              icon={<PlusOutlined />}
-              onClick={() => setOpen(true)}
-              className="w-full sm:w-auto"
-              style={{ borderRadius: "0.5rem" }}
-            >
-              Thêm từ
-            </Button>
+
+            <Space>
+              {/* Nút Import Excel */}
+              <Button
+                icon={<UploadOutlined />}
+                onClick={() => setOpenImport(true)}
+                className="w-full sm:w-auto"
+                style={{ borderRadius: "0.5rem" }}
+              >
+                Import Excel
+              </Button>
+
+              {/* Nút Thêm từ */}
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                onClick={() => setOpenAdd(true)}
+                className="w-full sm:w-auto"
+                style={{ borderRadius: "0.5rem" }}
+              >
+                Thêm từ
+              </Button>
+            </Space>
           </div>
         </div>
       </Card>
 
+      {/* Drawer Thêm từ */}
       <Drawer
         title="Thêm từ vựng mới"
         placement="right"
         width={window.innerWidth < 640 ? "100%" : 450}
-        onClose={() => setOpen(false)}
-        open={open}
+        onClose={() => setOpenAdd(false)}
+        open={openAdd}
         destroyOnHidden
         bodyStyle={{ padding: "1rem" }}
       >
         <CardAdd
           onAdded={() => setReload((prev) => !prev)}
-          onClose={() => setOpen(false)}
+          onClose={() => setOpenAdd(false)}
         />
+      </Drawer>
+
+      {/* Drawer Import Excel */}
+      <Drawer
+        title="Import từ Excel"
+        placement="right"
+        width={window.innerWidth < 640 ? "100%" : 600}
+        onClose={() => setOpenImport(false)}
+        open={openImport}
+        destroyOnHidden
+        bodyStyle={{ padding: "1rem" }}
+      >
+        <ImportVocabExcel onImported={() => setReload((prev) => !prev)} />
       </Drawer>
 
       {/* Content */}

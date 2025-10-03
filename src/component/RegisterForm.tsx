@@ -85,15 +85,7 @@ export default function RegisterForm() {
               Đăng ký
             </Button>
           </Form.Item>
-        </Form>
-
-        {/* Footer */}
-        <div className="text-center mt-4">
-          <Text type="secondary">Đã có tài khoản?</Text>{" "}
-          <a href="/login" className="text-indigo-600 font-medium hover:underline">
-            Đăng nhập ngay
-          </a>
-        </div>
+        </Form>        
       </Card>
     </div>
   );
