@@ -17,4 +17,8 @@ export const vocabApi = {
   add(data: Partial<Vocabulary>): Promise<Vocabulary> {
     return axiosClient.post("/vocabularies", data);
   },
+
+  addImport(data: Partial<Vocabulary>[]) {
+    return axiosClient.post("/vocabularies/import", data);
+  },
 };
