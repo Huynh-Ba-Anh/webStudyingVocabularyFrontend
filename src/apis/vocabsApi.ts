@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Vocabulary } from "../helpers/TypeData";
+import { ImportResponse } from "../shared/ts/interface/import";
 import axiosClient from "./axiosClient";
 
 export const vocabApi = {
@@ -18,7 +20,8 @@ export const vocabApi = {
     return axiosClient.post("/vocabularies", data);
   },
 
-  addImport(data: Partial<Vocabulary>[]) {
+  addImport(data: any[]): Promise<ImportResponse> {
+    // .then(res => res.data) để trả về data luôn
     return axiosClient.post("/vocabularies/import", data);
   },
 };

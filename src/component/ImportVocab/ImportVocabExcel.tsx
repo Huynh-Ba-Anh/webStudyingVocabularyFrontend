@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { Upload, Button, Table, message, Space } from "antd";
 import { UploadOutlined, ImportOutlined } from "@ant-design/icons";
 import * as XLSX from "xlsx";
-import { vocabApi } from "../apis/vocabsApi";
+import { vocabApi } from "../../apis/vocabsApi";
+import SampleExcelStructure from "./sampleStructureFile";
 
 export default function ImportVocabExcel({
   onImported,
@@ -13,7 +15,6 @@ export default function ImportVocabExcel({
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // Xử lý khi chọn file Excel
   const handleUpload = (file: File) => {
     const reader = new FileReader();
 
@@ -28,11 +29,10 @@ export default function ImportVocabExcel({
       message.success("Đọc file thành công!");
     };
 
-    reader.readAsBinaryString(file);
-    return false; // chặn upload mặc định của AntD
+    reader.readAsArrayBuffer(file);
+    return false;
   };
 
-  // Import dữ liệu vào backend
   const handleImport = async () => {
     if (data.length === 0) {
       return message.warning("Vui lòng chọn file trước!");
@@ -40,19 +40,33 @@ export default function ImportVocabExcel({
 
     try {
       setLoading(true);
-      const res = await vocabApi.addImport(data);
 
-      message.success(
-        `Import thành công ${res.data.successCount}, lỗi ${res.data.errorCount}`
-      );
-      if (res.data.errors.length > 0) {
-        console.warn("Lỗi:", res.data.errors);
+      const res = await vocabApi.addImport(data);
+      console.log(res);
+
+      const successCount = Number(res?.successCount ?? 0);
+      const errorCount = Number(res?.errorCount ?? 0);
+      const errors = res?.errors ?? [];
+
+      if (successCount > 0 && errorCount > 0) {
+        message.warning(
+          `Đã import thành công ${successCount} từ, nhưng có ${errorCount} lỗi!`
+        );
+        console.warn("Chi tiết lỗi:", errors);
+      } else if (successCount > 0) {
+        message.success(`Import thành công ${successCount} từ!`);
+      } else if (errorCount > 0) {
+        message.error(`Import thất bại, có ${errorCount} lỗi!`);
+        console.warn("Chi tiết lỗi:", errors);
+      } else {
+        message.error(`Không có từ nào để thêm`);
       }
-      onImported();
-      setData([]); // reset sau khi import
+
+      onImported?.();
+      setData([]);
     } catch (err) {
       console.error(err);
-      message.error("Import thất bại!");
+      message.error("Import thất bại, vui lòng thử lại!");
     } finally {
       setLoading(false);
     }
@@ -99,6 +113,7 @@ export default function ImportVocabExcel({
           className="mt-4"
         />
       )}
+      <SampleExcelStructure />
     </div>
   );
 }
