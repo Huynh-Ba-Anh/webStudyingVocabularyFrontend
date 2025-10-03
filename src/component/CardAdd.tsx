@@ -76,7 +76,11 @@ export default function CardAdd({ onAdded, onClose }: CardAddProps) {
         <TextArea rows={3} placeholder="Ví dụ: học sinh" />
       </Form.Item>
 
-      <Form.Item label="Ví dụ" name="example">
+      <Form.Item
+        label="Ví dụ"
+        name="example"
+        rules={[{ required: true, message: "Vui lòng nhập ví dụ" }]}
+      >
         <TextArea rows={2} placeholder="Ví dụ: 私は学生です。" />
       </Form.Item>
 
