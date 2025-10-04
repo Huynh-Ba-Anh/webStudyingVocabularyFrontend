@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import MainLayout from "./layout/MainLayout";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route, HashRouter } from "react-router-dom";
 import SettingsPage from "./pages/settingsPage";
 import VocabularyPage from "./pages/vocabularyPage";
 import Progress from "./pages/progress";
@@ -19,7 +19,7 @@ function App() {
   }, []);
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         {accessToken ? (
           <Route element={<MainLayout />}>
@@ -28,7 +28,7 @@ function App() {
             <Route path="vocabulary" element={<VocabularyPage />} />
             <Route path="progress" element={<Progress />} />
             <Route path="profile" element={<Profile />} />
-            <Route path="/topic/:topicId" element={<TopicVocabPage />} />
+            <Route path="topic/:topicId" element={<TopicVocabPage />} />
           </Route>
         ) : (
           <Route element={<MainLayout />}>
@@ -37,7 +37,7 @@ function App() {
         )}
         <Route path="*" element={<div>404 Not Found</div>} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
