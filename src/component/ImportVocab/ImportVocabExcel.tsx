@@ -9,8 +9,10 @@ import SampleExcelStructure from "./sampleStructureFile";
 
 export default function ImportVocabExcel({
   onImported,
+  topicId,
 }: {
   onImported: () => void;
+  topicId: string | undefined;
 }) {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -41,7 +43,7 @@ export default function ImportVocabExcel({
     try {
       setLoading(true);
 
-      const res = await vocabApi.addImport(data);
+      const res = await vocabApi.addImport(topicId, data);
       console.log(res);
 
       const successCount = Number(res?.successCount ?? 0);

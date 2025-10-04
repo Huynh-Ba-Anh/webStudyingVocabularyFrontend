@@ -6,18 +6,19 @@ import { vocabApi } from "../apis/vocabsApi";
 const { TextArea } = Input;
 
 interface CardAddProps {
+  topicId: string | undefined;
   onAdded: () => void;
   onClose: () => void;
 }
 
-export default function CardAdd({ onAdded, onClose }: CardAddProps) {
+export default function CardAdd({ onAdded, onClose, topicId }: CardAddProps) {
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
 
   const handleFinish = async (values: Partial<Vocabulary>) => {
     try {
       setLoading(true);
-      await vocabApi.add(values);
+      await vocabApi.add(topicId, values);
       message.success("✅ Thêm từ vựng thành công!");
       form.resetFields();
       onAdded();
@@ -76,7 +77,11 @@ export default function CardAdd({ onAdded, onClose }: CardAddProps) {
         <TextArea rows={3} placeholder="Ví dụ: học sinh" />
       </Form.Item>
 
-      <Form.Item label="Ví dụ" name="example">
+      <Form.Item
+        label="Ví dụ"
+        name="example"
+        rules={[{ required: true, message: "Vui lòng nhập ví dụ" }]}
+      >
         <TextArea rows={2} placeholder="Ví dụ: 私は学生です。" />
       </Form.Item>
 

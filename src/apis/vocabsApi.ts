@@ -8,6 +8,10 @@ export const vocabApi = {
     return axiosClient.get(`/vocabularies`);
   },
 
+  getNewVocab() {
+    return axiosClient.get(`/vocabularies/newVocab`);
+  },
+
   delete(id: string) {
     return axiosClient.delete(`/vocabularies/${id}`);
   },
@@ -16,12 +20,17 @@ export const vocabApi = {
     return axiosClient.put(`/vocabularies/${id}`, params);
   },
 
-  add(data: Partial<Vocabulary>): Promise<Vocabulary> {
-    return axiosClient.post("/vocabularies", data);
+  add(
+    topicId: string | undefined,
+    data: Partial<Vocabulary>
+  ): Promise<Vocabulary> {
+    return axiosClient.post("/vocabularies", { ...data, topicApi: topicId });
   },
 
-  addImport(data: any[]): Promise<ImportResponse> {
-    // .then(res => res.data) để trả về data luôn
-    return axiosClient.post("/vocabularies/import", data);
+  addImport(topicId: string | undefined, data: any[]): Promise<ImportResponse> {
+    return axiosClient.post("/vocabularies/import", {
+      ...data,
+      topicApi: topicId,
+    });
   },
 };

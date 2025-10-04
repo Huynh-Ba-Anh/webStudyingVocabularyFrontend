@@ -8,6 +8,7 @@ import CardAdd from "../component/CardAdd";
 import { vocabApi } from "../apis/vocabsApi";
 import { motion, AnimatePresence } from "framer-motion";
 import ImportVocabExcel from "../component/ImportVocab/ImportVocabExcel";
+import TopicFolderPage from "../component/FolderTopic";
 type CategoryKey = "new" | "learning" | "forgotten" | "mastered" | "all";
 
 const categories = [
@@ -36,7 +37,9 @@ export default function VocabularyPage() {
           setVocabularies([]);
           return;
         }
-        const res = await vocabApi.getAll();
+        const res = await vocabApi.getNewVocab();
+
+        console.log(res);
         setVocabularies(Array.isArray(res) ? res : []);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error);
@@ -106,6 +109,7 @@ export default function VocabularyPage() {
         styles={{ body: { padding: "1rem" } }}
       >
         <CardAdd
+          topicId={undefined}
           onAdded={() => setReload((prev) => !prev)}
           onClose={() => setOpenAdd(false)}
         />
@@ -120,7 +124,10 @@ export default function VocabularyPage() {
         destroyOnHidden
         styles={{ body: { padding: "1rem" } }}
       >
-        <ImportVocabExcel onImported={() => setReload((prev) => !prev)} />
+        <ImportVocabExcel
+          topicId={undefined}
+          onImported={() => setReload((prev) => !prev)}
+        />
       </Drawer>
 
       <div className="p-6">
@@ -165,6 +172,7 @@ export default function VocabularyPage() {
           </div>
         )}
       </div>
+      <TopicFolderPage />
     </div>
   );
 }
