@@ -24,11 +24,11 @@ function App() {
         {accessToken ? (
           <Route element={<MainLayout />}>
             <Route path="/" element={<VocabularyPage />} />
-            <Route path="settings" element={<SettingsPage />} />
-            <Route path="vocabulary" element={<VocabularyPage />} />
-            <Route path="progress" element={<Progress />} />
-            <Route path="profile" element={<Profile />} />
-            <Route path="topic/:topicId" element={<TopicVocabPage />} />
+            <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/vocabulary" element={<VocabularyPage />} />
+            <Route path="/progress" element={<Progress />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/topic/:topicId" element={<TopicVocabPage />} />
           </Route>
         ) : (
           <Route element={<MainLayout />}>
