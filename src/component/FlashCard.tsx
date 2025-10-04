@@ -3,6 +3,7 @@ import { useState } from "react";
 import DetailCard from "./DetailCard";
 import { Vocabulary } from "../helpers/TypeData";
 import { vocabApi } from "../apis/vocabsApi";
+import { speakWord } from "./speakWord";
 
 export default function FlashCard({
   vocab,
@@ -11,6 +12,7 @@ export default function FlashCard({
   vocab: Vocabulary;
   onUpdate: () => void;
 }) {
+  const [lang, setLang] = useState<"en" | "ja">("en");
   const [flipped, setFlipped] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -36,6 +38,30 @@ export default function FlashCard({
             flipped ? "[transform:rotateY(180deg)]" : ""
           }`}
         >
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setLang(lang === "en" ? "ja" : "en");
+            }}
+            className={`absolute top-2 left-2 z-50 transition-opacity duration-300 ${
+              flipped ? "opacity-0 pointer-events-none" : "opacity-100"
+            }`}
+          >
+            {lang === "en" ? "EN" : "JA"}
+          </button>
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              speakWord(vocab.word, lang);
+            }}
+            className={`absolute top-2 right-2 z-50 transition-opacity duration-300 ${
+              flipped ? "opacity-0 pointer-events-none" : "opacity-100"
+            }`}
+          >
+            🔊
+          </button>
+
           {/* Front */}
           <div className="absolute w-full h-full bg-white rounded-xl shadow-xl flex flex-col justify-center items-center [backface-visibility:hidden] p-4">
             <h2 className="text-2xl font-bold">{vocab.word}</h2>
