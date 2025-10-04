@@ -24,13 +24,17 @@ export const vocabApi = {
     topicId: string | undefined,
     data: Partial<Vocabulary>
   ): Promise<Vocabulary> {
-    return axiosClient.post("/vocabularies", { ...data, topicApi: topicId });
+    return axiosClient.post(`/vocabularies/${topicId}`, {
+      ...data,
+      topicApi: topicId,
+    });
   },
 
   addImport(topicId: string | undefined, data: any[]): Promise<ImportResponse> {
-    return axiosClient.post("/vocabularies/import", {
-      ...data,
-      topicApi: topicId,
+    return axiosClient.post(`/vocabularies/import/${topicId}`, data, {
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
   },
 };
