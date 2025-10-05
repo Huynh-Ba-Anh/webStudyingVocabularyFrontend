@@ -96,6 +96,7 @@ export default function FolderTopic() {
       message.error("Không thể lưu chủ đề");
     }
   };
+  { console.log(topics) }
 
   const handleDeleteTopic = (id: string) => {
     Modal.confirm({
