@@ -3,7 +3,7 @@ import { useState } from "react";
 import DetailCard from "./DetailCard";
 import { Vocabulary } from "../helpers/TypeData";
 import { vocabApi } from "../apis/vocabsApi";
-import { speakWord } from "./speakWord";
+import { speakWord } from "./Function/speakWord";
 
 export default function FlashCard({
   vocab,
@@ -34,18 +34,16 @@ export default function FlashCard({
         onClick={() => setFlipped(!flipped)}
       >
         <div
-          className={`relative w-full h-full transition-transform duration-500 [transform-style:preserve-3d] ${
-            flipped ? "[transform:rotateY(180deg)]" : ""
-          }`}
+          className={`relative w-full h-full transition-transform duration-500 [transform-style:preserve-3d] ${flipped ? "[transform:rotateY(180deg)]" : ""
+            }`}
         >
           <button
             onClick={(e) => {
               e.stopPropagation();
               setLang(lang === "en" ? "ja" : "en");
             }}
-            className={`absolute top-2 left-2 z-50 transition-opacity duration-300 ${
-              flipped ? "opacity-0 pointer-events-none" : "opacity-100"
-            }`}
+            className={`absolute top-2 left-2 z-50 transition-opacity duration-300 ${flipped ? "opacity-0 pointer-events-none" : "opacity-100"
+              }`}
           >
             {lang === "en" ? "EN" : "JA"}
           </button>
@@ -55,9 +53,8 @@ export default function FlashCard({
               e.stopPropagation();
               speakWord(vocab.word, lang);
             }}
-            className={`absolute top-2 right-2 z-50 transition-opacity duration-300 ${
-              flipped ? "opacity-0 pointer-events-none" : "opacity-100"
-            }`}
+            className={`absolute top-2 right-2 z-50 transition-opacity duration-300 ${flipped ? "opacity-0 pointer-events-none" : "opacity-100"
+              }`}
           >
             🔊
           </button>

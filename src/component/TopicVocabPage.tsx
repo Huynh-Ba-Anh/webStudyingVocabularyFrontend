@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Spin, Empty, Drawer, Button, Space } from "antd";
@@ -9,6 +10,7 @@ import FlashCard from "../component/FlashCard";
 import CardAdd from "../component/CardAdd";
 import ImportVocabExcel from "../component/ImportVocab/ImportVocabExcel";
 import { topicApi } from "../apis/topicApi";
+import SearchWord from "./SearchWord";
 
 export default function TopicVocabPage() {
   const { topicId } = useParams<{ topicId: string }>();
@@ -18,6 +20,12 @@ export default function TopicVocabPage() {
   const [openAdd, setOpenAdd] = useState(false);
   const [openImport, setOpenImport] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [dataSerch, setDataSearch] = useState<any>(null);
+
+  const DataSearch = (data: any) => {
+    setDataSearch(data);
+    setOpenAdd(true);
+  }
 
   useEffect(() => {
     const fetchVocabByTopic = async () => {
@@ -60,7 +68,7 @@ export default function TopicVocabPage() {
             <Button
               type="primary"
               icon={<PlusOutlined />}
-              onClick={() => setOpenAdd(true)}
+              onClick={() => (setOpenAdd(true), setDataSearch(null))}
               className="w-full sm:w-auto"
               style={{ borderRadius: "0.5rem" }}
             >
@@ -69,6 +77,8 @@ export default function TopicVocabPage() {
           </Space>
         </div>
       </div>
+
+      <SearchWord onSearch={DataSearch} />
 
       {/* Drawer Thêm từ */}
       <Drawer
@@ -81,6 +91,7 @@ export default function TopicVocabPage() {
         styles={{ body: { padding: "1rem" } }}
       >
         <CardAdd
+          dataSearch={dataSerch}
           topicId={topicId}
           onAdded={() => setReload((prev) => !prev)}
           onClose={() => setOpenAdd(false)}

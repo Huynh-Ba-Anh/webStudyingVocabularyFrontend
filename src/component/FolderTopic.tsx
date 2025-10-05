@@ -184,7 +184,9 @@ export default function FolderTopic() {
                 <Card
                   hoverable
                   onClick={() => navigate(`/topic/${topic._id}`)}
-                  className="rounded-2xl shadow-md border border-gray-200 text-center bg-white relative"
+                  className="relative rounded-2xl shadow-sm hover:shadow-lg border border-gray-100 
+             transition-all duration-300 bg-gradient-to-br from-white to-blue-50 
+             text-center cursor-pointer overflow-hidden"
                 >
                   {topic.topicName !== "Non-Topic" && !topic.isDefault && (
                     <>
@@ -194,38 +196,48 @@ export default function FolderTopic() {
                         icon={<DeleteOutlined />}
                         danger
                         size="small"
-                        className="absolute top-2 right-2"
-                        onClick={() =>
-                          handleDeleteTopic(topic._id || topic._id)
-                        }
+                        className="absolute top-2 right-2 hover:scale-110 transition-transform"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteTopic(topic._id);
+                        }}
                       />
-
                       <Button
                         type="text"
                         shape="circle"
                         icon={<EditOutlined />}
                         size="small"
-                        className="absolute top-2 right-10 text-blue-600"
-                        onClick={() => openEditDrawer(topic)}
+                        className="absolute top-2 right-10 text-blue-600 hover:scale-110 transition-transform"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openEditDrawer(topic);
+                        }}
                       />
                     </>
                   )}
 
-                  <FolderOutlined
-                    style={{
-                      fontSize: "40px",
-                      color:
-                        topic.topicName === "Non-Topic" ? "#999" : "#1677ff",
-                      marginBottom: 10,
-                    }}
-                  />
-                  <h2 className="text-lg font-bold text-gray-800">
-                    {topic.topicName}
-                  </h2>
-                  <p className="text-gray-500 text-sm mt-1">
-                    {topic.vocabIds?.length || 0} từ vựng
-                  </p>
+                  <div className="flex flex-col items-center justify-center py-6">
+                    <div
+                      className={`flex items-center justify-center w-16 h-16 rounded-full mb-3 
+        ${topic.topicName === "Non-Topic"
+                          ? "bg-gray-100 text-gray-400"
+                          : "bg-blue-100 text-blue-500"}`}
+                    >
+                      <FolderOutlined className="text-3xl" />
+                    </div>
+
+                    <h2 className="text-lg font-semibold text-gray-800 truncate px-2">
+                      {topic.topicName.split(" of ")[0]}
+                    </h2>
+
+                    <p className="text-gray-500 text-sm mt-1">
+                      {topic.vocabIds?.length || 0} từ vựng
+                    </p>
+                  </div>
+
+                  <div className="absolute bottom-0 left-0 w-full h-1 bg-blue-400 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
                 </Card>
+
               </motion.div>
             </Col>
           ))}

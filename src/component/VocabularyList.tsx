@@ -22,6 +22,8 @@ export default function VocabularyListUI({ vocabularies }: Props) {
         {expanded ? "Ẩn danh sách từ vựng" : "Xem danh sách từ vựng"}
       </button>
 
+      <input type="text" placeholder="Nhập từ vựng..." />
+
       {expanded && (
         <Row gutter={[16, 16]}>
           {vocabularies.map((vocab, idx) => (
