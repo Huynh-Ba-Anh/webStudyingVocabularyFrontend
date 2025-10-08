@@ -13,7 +13,12 @@ interface CardAddProps {
   onClose: () => void;
 }
 
-export default function CardAdd({ onAdded, onClose, topicId, dataSearch }: CardAddProps) {
+export default function CardAdd({
+  onAdded,
+  onClose,
+  topicId,
+  dataSearch,
+}: CardAddProps) {
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
 
@@ -23,8 +28,7 @@ export default function CardAdd({ onAdded, onClose, topicId, dataSearch }: CardA
         word: dataSearch.word || "",
         phonetic: dataSearch.phonetic || "",
         word_type: dataSearch.meanings?.[0]?.partOfSpeech || "",
-        meaning:
-          dataSearch.meaning_vi || "",
+        meaning: dataSearch.meaning_vi || "",
         example: dataSearch.example || "",
       });
     }
@@ -47,7 +51,12 @@ export default function CardAdd({ onAdded, onClose, topicId, dataSearch }: CardA
   };
 
   return (
-    <Form form={form} layout="vertical" onFinish={handleFinish} autoComplete="off">
+    <Form
+      form={form}
+      layout="vertical"
+      onFinish={handleFinish}
+      autoComplete="off"
+    >
       <Form.Item label="Từ vựng" name="word" rules={[{ required: true }]}>
         <Input placeholder="Ví dụ: 学生" />
       </Form.Item>
@@ -56,7 +65,7 @@ export default function CardAdd({ onAdded, onClose, topicId, dataSearch }: CardA
         <Input placeholder="Ví dụ: がくせい" />
       </Form.Item>
 
-      <Form.Item label="Loại từ" name="word_type" rules={[{ required: true }]}>
+      <Form.Item label="Loại từ" name="word_type">
         <Select placeholder="Chọn loại từ">
           <Select.Option value="noun">Danh từ</Select.Option>
           <Select.Option value="verb">Động từ</Select.Option>
