@@ -36,7 +36,6 @@ export default function TopicVocabPage() {
         const res = await topicApi.getTopicById(topicId);
         setTopicName(res.topicName || "Chủ đề");
         setVocabularies(res.vocabIds || []);
-        console.log(res);
       } catch (error) {
         console.error("Lỗi khi lấy từ vựng theo topic:", error);
       } finally {
@@ -52,7 +51,7 @@ export default function TopicVocabPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
         <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-800">
-          📚 Danh sách từ vựng của chủ đề "{topicName}"
+          📚 Danh sách từ vựng của chủ đề "{topicName.split(" of ")[0]}"
         </h1>
         <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
           <Space>

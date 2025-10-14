@@ -42,13 +42,15 @@ export default function SearchWord({ onSearch }: Props) {
                     onChange={(e) => setTerm(e.target.value)}
                     className="w-full rounded-xl border border-gray-300 px-4 py-2 pr-12 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition"
                 />
-                <button
-                    onClick={() => speakWord(term, data?.detectedLang || "en")}
-                    className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 flex items-center justify-center rounded-full bg-blue-400 text-white shadow hover:bg-blue-500 transition"
-                    title="Phát âm"
-                >
-                    🔊
-                </button>
+                {term && (
+                    <button
+                        onClick={() => speakWord(term, data?.detectedLang || "en")}
+                        className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 flex items-center justify-center rounded-full bg-blue-400 text-white shadow hover:bg-blue-500 transition"
+                        title="Phát âm"
+                    >
+                        🔊
+                    </button>
+                )}
             </div>
 
             <button

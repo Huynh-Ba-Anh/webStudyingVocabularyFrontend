@@ -5,4 +5,7 @@ export interface Topic {
   topicName: string;
   vocabIds: Vocabulary[];
   isDefault: boolean;
+  totalVocab: number;
+  currentPage: number;
+  totalPages: number;
 }
