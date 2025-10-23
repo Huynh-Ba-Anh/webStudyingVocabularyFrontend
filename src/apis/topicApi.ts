@@ -6,9 +6,12 @@ export const topicApi = {
     return axiosClient.get("/topics");
   },
 
-  getTopicById(id: string): Promise<Topic> {
-    return axiosClient.get(`/topics/${id}`);
+  getTopicById(id: string, status?: string): Promise<Topic> {
+    return axiosClient.get(`/topics/${id}`, {
+      params: status ? { status } : {},
+    });
   },
+
 
   createTopic(params: Partial<Topic>): Promise<Topic> {
     return axiosClient.post("/topics", params);

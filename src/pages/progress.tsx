@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Button, Card, message, Radio, Result } from "antd";
+import { Button, Card, Input, message, Radio, Result } from "antd";
 import { progressApi } from "../apis/Progress";
 import Title from "antd/es/typography/Title";
 import { ReloadOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import { FillExercies } from "../shared/ts/types/fillExercises";
+import { speakWord } from "../component/Function/speakWord";
 
 export default function Progress() {
   const [fillExercises, setFillExercises] = useState<FillExercies[]>([]);
@@ -13,13 +14,14 @@ export default function Progress() {
   const [results, setResults] = useState<number>(0);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+  const [typeExercise, setTypeExercise] = useState<string | null>(null);
 
   const createProgress = async () => {
     try {
       const response = await progressApi.createProgress();
       const progressId = response._id;
 
-      const getFillExercise = await progressApi.getFillExercise(progressId);
+      const getFillExercise = await progressApi.getFillExercise(progressId, typeExercise);
       setFillExercises(getFillExercise.exercises || []);
       setAnswers({});
       setProgressId(progressId);
@@ -33,9 +35,11 @@ export default function Progress() {
 
   const handleAnswerChange = (index: number, value: string) => {
     setAnswers((prev) => ({ ...prev, [index]: value }));
+
   };
 
   const handleNext = () => {
+
     if (!answers[currentIndex]) {
       message.warning("Vui lòng chọn đáp án trước khi tiếp tục!");
       return;
@@ -68,6 +72,15 @@ export default function Progress() {
         <Title level={3} className="mb-8 text-gray-900">
           📝 Bài tập Progress
         </Title>
+        <Radio.Group
+          onChange={(e) => setTypeExercise(e.target.value)}
+          value={typeExercise}
+          className="mb-6 flex flex-col items-center gap-4"
+        >
+          <Radio value="Writing" className="text-base">
+            Tự Luận
+          </Radio>
+        </Radio.Group>
         <Button
           onClick={createProgress}
           type="primary"
@@ -86,8 +99,8 @@ export default function Progress() {
       <div className="max-w-3xl mx-auto mt-12 px-4 sm:px-6 lg:px-8 text-center">
         <Result
           status={isWin ? "success" : "error"}
-          title={isWin ? `🎉 Chúc mừng! Bạn trả lời đúng ${results}/${fillExercises.length} câu!` 
-                      : `😔 Rất tiếc! Bạn chỉ trả lời đúng ${results}/${fillExercises.length} câu.`}
+          title={isWin ? `🎉 Chúc mừng! Bạn trả lời đúng ${results}/${fillExercises.length} câu!`
+            : `😔 Rất tiếc! Bạn chỉ trả lời đúng ${results}/${fillExercises.length} câu.`}
           extra={[
             <Button
               type="primary"
@@ -115,21 +128,46 @@ export default function Progress() {
       <Card className="border rounded-2xl shadow-md p-6 transition-all duration-300 hover:shadow-xl bg-white">
         <div className="mb-4">
           <span className="font-semibold text-gray-800 text-lg">
-            Câu {currentIndex + 1}/{fillExercises.length}:{currentQuestion.question}
+            Câu {currentIndex + 1}/{fillExercises.length}: {currentQuestion.question}
           </span>
         </div>
+        {typeExercise === "Writing" ?
+          (
+            <div className="relative w-full">
+              <Input
+                value={answers[currentIndex] || ""}
+                onChange={(e) => handleAnswerChange(currentIndex, e.target.value)}
+                placeholder="Nhập đáp án của bạn ở đây"
+                className="w-full rounded-lg border-gray-300 pr-10 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+              />
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  speakWord(fillExercises[currentIndex].answer, "en");
+                }}
+                className="absolute top-1/2 right-2 -translate-y-1/2 text-gray-600 hover:text-blue-500"
+              >
+                🔊
+              </button>
+            </div>
 
-        <Radio.Group
-          onChange={(e) => handleAnswerChange(currentIndex, e.target.value)}
-          value={answers[currentIndex] || ""}
-          className="flex flex-col gap-2"
-        >
-          {currentQuestion.options.map((opt, idx) => (
-            <Radio key={idx} value={opt} className="text-base">
-              {opt}
-            </Radio>
-          ))}
-        </Radio.Group>
+          ) :
+          (
+            <Radio.Group
+              onChange={(e) => handleAnswerChange(currentIndex, e.target.value)}
+              value={answers[currentIndex] || ""}
+              className="flex flex-col gap-2"
+            >
+              {currentQuestion.options.map((opt, idx) => (
+                <Radio key={idx} value={opt} className="text-base">
+                  {opt}
+                </Radio>
+              ))}
+            </Radio.Group>
+          )
+        }
+
+
 
         <div className="flex justify-between gap-4 mt-6">
           <Button

@@ -103,6 +103,8 @@ export default function FlashCard({
               >
                 Xóa
               </Button>
+              <div> {vocab.status}</div>
+
             </div>
           </div>
         </div>

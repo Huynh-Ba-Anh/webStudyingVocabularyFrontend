@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Spin, Empty, Drawer, Button, Space } from "antd";
+import { Spin, Empty, Drawer, Button, Space, Select } from "antd";
 import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -12,6 +12,13 @@ import ImportVocabExcel from "../component/ImportVocab/ImportVocabExcel";
 import { topicApi } from "../apis/topicApi";
 import SearchWord from "./SearchWord";
 
+const categories = [
+  { key: "new", label: "Mới" },
+  { key: "learning", label: "Đang học" },
+  { key: "forgotten", label: "Quên" },
+  { key: "mastered", label: "Thành thạo" },
+] as const;
+
 export default function TopicVocabPage() {
   const { topicId } = useParams<{ topicId: string }>();
   const [topicName, setTopicName] = useState("");
@@ -21,6 +28,8 @@ export default function TopicVocabPage() {
   const [openImport, setOpenImport] = useState(false);
   const [loading, setLoading] = useState(true);
   const [dataSerch, setDataSearch] = useState<any>(null);
+  const [selected, setSelected] = useState<string | undefined>(undefined);
+
 
   const DataSearch = (data: any) => {
     setDataSearch(data);
@@ -33,7 +42,7 @@ export default function TopicVocabPage() {
       try {
         if (!topicId) return;
 
-        const res = await topicApi.getTopicById(topicId);
+        const res = await topicApi.getTopicById(topicId, selected);
         setTopicName(res.topicName || "Chủ đề");
         setVocabularies(res.vocabIds || []);
       } catch (error) {
@@ -44,8 +53,7 @@ export default function TopicVocabPage() {
     };
 
     fetchVocabByTopic();
-  }, [topicId, reload]);
-  console.log(topicId);
+  }, [topicId, reload, selected]);
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       {/* Header */}
@@ -53,6 +61,7 @@ export default function TopicVocabPage() {
         <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-800">
           📚 Danh sách từ vựng của chủ đề "{topicName.split(" of ")[0]}"
         </h1>
+
         <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
           <Space>
             <Button
@@ -74,12 +83,22 @@ export default function TopicVocabPage() {
               Thêm từ
             </Button>
           </Space>
+
+          <Select
+            value={selected}
+            placeholder="Tất cả từ vựng"
+            onChange={(value) => setSelected(value)}
+            options={categories.map(({ key, label }) => ({
+              value: key,
+              label,
+            }))}
+            className="w-full sm:w-52"
+          />
         </div>
       </div>
 
       <SearchWord onSearch={DataSearch} />
 
-      {/* Drawer Thêm từ */}
       <Drawer
         title="Thêm từ vựng mới"
         placement="right"
@@ -113,7 +132,6 @@ export default function TopicVocabPage() {
         />
       </Drawer>
 
-      {/* Danh sách từ */}
       {loading ? (
         <div className="flex flex-col justify-center items-center h-60">
           <Spin size="large" />
