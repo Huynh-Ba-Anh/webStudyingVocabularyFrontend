@@ -85,7 +85,7 @@ export default function Header() {
               {
                 key: "stats",
                 label: "Thống kê",
-                onClick: () => navigate("/progress"),
+                onClick: () => navigate("/histories"),
               },
             ]}
           />

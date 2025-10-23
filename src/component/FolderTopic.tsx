@@ -39,7 +39,6 @@ export default function FolderTopic() {
     try {
       setLoading(true);
       const res = await topicApi.getTopics();
-      console.log(res);
       setTopics(res);
     } catch (error) {
       message.error("Không thể tải danh sách chủ đề");
@@ -47,6 +46,7 @@ export default function FolderTopic() {
       setLoading(false);
     }
   };
+
 
   const openAddDrawer = () => {
     setEditTopicId(null);
@@ -96,7 +96,6 @@ export default function FolderTopic() {
       message.error("Không thể lưu chủ đề");
     }
   };
-  { console.log(topics) }
 
   const handleDeleteTopic = (id: string) => {
     Modal.confirm({
@@ -220,7 +219,7 @@ export default function FolderTopic() {
                   <div className="flex flex-col items-center justify-center py-6">
                     <div
                       className={`flex items-center justify-center w-16 h-16 rounded-full mb-3 
-        ${topic.topicName === "Non-Topic"
+                          ${topic.topicName === "Non-Topic"
                           ? "bg-gray-100 text-gray-400"
                           : "bg-blue-100 text-blue-500"}`}
                     >
@@ -232,7 +231,7 @@ export default function FolderTopic() {
                     </h2>
 
                     <p className="text-gray-500 text-sm mt-1">
-                      {topic.vocabIds?.length || 0} từ vựng
+                      {topic.vocabIds.length || 0} từ vựng
                     </p>
                   </div>
 

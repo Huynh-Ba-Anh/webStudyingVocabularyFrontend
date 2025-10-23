@@ -5,8 +5,8 @@ import axiosClient from "./axiosClient";
 export const progressApi = {
   createProgress: (): Promise<Progress> => axiosClient.post("/progresses"),
 
-  getFillExercise: (progressId: string): Promise<FillExercise> =>
-    axiosClient.get(`/progresses/fill-Exercise/${progressId}`),
+  getFillExercise: (progressId: string, typeExercise: string | null): Promise<FillExercise> =>
+    axiosClient.get(`/progresses/fill-Exercise/${progressId}`, { params: { typeExercise } }),
 
   submitExercise: (
     progressId: string,

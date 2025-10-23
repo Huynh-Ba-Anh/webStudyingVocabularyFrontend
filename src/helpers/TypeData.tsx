@@ -11,16 +11,16 @@ export interface Vocabulary {
   word: string;
   meaning: string;
   word_type:
-    | "danh từ"
-    | "động từ"
-    | "tính từ い"
-    | "tính từ な"
-    | "trạng từ"
-    | "trợ từ"
-    | "trợ động từ"
-    | "định từ"
-    | "liên từ"
-    | "thán từ";
+  | "danh từ"
+  | "động từ"
+  | "tính từ い"
+  | "tính từ な"
+  | "trạng từ"
+  | "trợ từ"
+  | "trợ động từ"
+  | "định từ"
+  | "liên từ"
+  | "thán từ";
   phonetic: string;
   example: string;
   status: "new";

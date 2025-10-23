@@ -4,12 +4,18 @@ import { ImportResponse } from "../shared/ts/interface/import";
 import axiosClient from "./axiosClient";
 
 export const vocabApi = {
-  getAll() {
-    return axiosClient.get(`/vocabularies`);
+  getAll(params = {}): Promise<{ data: Vocabulary[]; total: number }> {
+    return axiosClient.get(`/vocabularies`, { params });
   },
 
   getNewVocab() {
     return axiosClient.get(`/vocabularies/newVocab`);
+  },
+
+  getSearch(query: string): Promise<Vocabulary[]> {
+    return axiosClient.get(`/vocabularies/search`, {
+      params: { query },
+    });
   },
 
   delete(id: string) {

@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { useDecodedToken } from "../component/DecodedToken";
 import { Vocabulary } from "../helpers/TypeData";
 import FlashCard from "../component/FlashCard";
-import { Button, Select, Card, Spin, Empty, Drawer, Space } from "antd";
+import { Button, Select, Card, Spin, Empty, Drawer, Space, Pagination } from "antd";
 import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import CardAdd from "../component/CardAdd";
 import { vocabApi } from "../apis/vocabsApi";
@@ -26,7 +27,9 @@ export default function VocabularyPage() {
   const [selected, setSelected] = useState<CategoryKey>("all");
   const [openAdd, setOpenAdd] = useState(false);
   const [openImport, setOpenImport] = useState(false);
+  const [total, setTotal] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState<number>(1);
 
   useEffect(() => {
     const fetchVocab = async () => {
@@ -37,10 +40,11 @@ export default function VocabularyPage() {
           setVocabularies([]);
           return;
         }
-        const res = await vocabApi.getNewVocab();
+        const res = await vocabApi.getAll({ page, limit: 12 });
 
-        console.log(res);
-        setVocabularies(Array.isArray(res) ? res : []);
+        setVocabularies(res.data);
+        setTotal(res.total);
+
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error);
         setVocabularies([]);
@@ -49,7 +53,7 @@ export default function VocabularyPage() {
       }
     };
     fetchVocab();
-  }, [reload, decoded?.role]);
+  }, [reload, decoded?.role, page]);
 
   const filteredVocabularies =
     selected === "all"
@@ -171,6 +175,15 @@ export default function VocabularyPage() {
             </AnimatePresence>
           </div>
         )}
+        <div className="flex justify-center mt-8">
+          <Pagination
+            current={page}
+            pageSize={10}
+            onChange={(page) => setPage(page)}
+            total={total || 0}
+            showTotal={(total) => `Tổng ${total} từ`}
+          />
+        </div>
       </div>
       <TopicFolderPage />
     </div>
