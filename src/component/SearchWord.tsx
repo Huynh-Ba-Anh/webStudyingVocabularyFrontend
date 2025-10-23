@@ -30,8 +30,6 @@ export default function SearchWord({ onSearch }: Props) {
         if (data) onSearch(data);
     };
 
-    console.log(data)
-
     return (
         <div className="flex flex-col items-center gap-4 mb-6">
             <div className="relative w-full max-w-xs">

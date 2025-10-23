@@ -42,10 +42,7 @@ export default function ImportVocabExcel({
 
     try {
       setLoading(true);
-
       const res = await vocabApi.addImport(topicId, data);
-      console.log(res);
-
       const successCount = Number(res?.successCount ?? 0);
       const errorCount = Number(res?.errorCount ?? 0);
       const errors = res?.errors ?? [];
