@@ -13,14 +13,12 @@ const axiosClient = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
-// Request interceptor
 axiosClient.interceptors.request.use((cfg) => {
   const accessToken = getAccessTokenFromLS();
   if (accessToken) cfg.headers.Authorization = `Bearer ${accessToken}`;
   return cfg;
 });
 
-// Response interceptor
 axiosClient.interceptors.response.use(
   (res) => res.data,
   async (error) => {
@@ -38,7 +36,6 @@ axiosClient.interceptors.response.use(
         setAccessTokenToLS(accessToken);
         setRefreshTokenToLS(refreshtoken);
 
-        // Update axiosClient headers
         axiosClient.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
 
         return axiosClient(originalRequest);
